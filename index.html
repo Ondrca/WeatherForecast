@@ -1,35 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>Weather Forecast</title>
-	<link rel="stylesheet" href="style.css">
-</head>
-<body>
-<header>
-	<h1>Weather Forecast</h1>
-	<input type="text" maxlength="100" id="location">	
-</header>
-<main>
-	<div class="forecast">
-		<div class="forecast--item">
-			<h2>Location</h2>
-		</div>
-		<div class="forecast--item">
+	<head>
+		<meta charset="UTF-8">
+		<title>Weather Forecast</title>
+		<link rel="stylesheet" href="css/weather-icons.min.css">
+		<link rel="stylesheet" href="style.css">
+	</head>
+	<body>
+		<div id="cover" class="">	
+			<div id="details">
 			
+			</div>
 		</div>
-		<div class="forecast--item">
-			
-		</div>
-		<div class="forecast--item">
-			
-		</div>
-		<div class="forecast--item">
-			
-		</div>
-	</div>
-</main>
 
-<script src="script.js"></script>
-</body>
+		<header>
+			<h1>Weather Forecast</h1>
+			<input type="text" maxlength="100" id="location" disabled>
+		</header>
+		<main>
+			<div class="forecast" id="forecast">
+
+			</div>
+		</main>
+		<script src="script.js"></script>
+	</body>
 </html>
