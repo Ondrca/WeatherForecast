@@ -111,7 +111,7 @@ function getWeather(location, callback)
     if(location.hasOwnProperty("city")) params = `q=${location.city}`; 
     else if (location.hasOwnProperty("coords")) params = `lat=${location.coords.lat}&lon=${location.coords.lon}`;
     console.log(params);
-    xmlHttp.open("GET", `http://api.openweathermap.org/data/2.5/forecast?${params}&appid=${API_KEY}`, true);
+    xmlHttp.open("GET", `https://api.openweathermap.org/data/2.5/forecast?${params}&appid=${API_KEY}`, true);
     xmlHttp.send(null);
 }
 
