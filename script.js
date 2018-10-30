@@ -7,11 +7,14 @@ var options = {
 };
 
 var cover = document.getElementById("cover");
+var details = document.getElementById("details");
+var days = {};
 
 document.addEventListener('DOMContentLoaded', function() {
+	closeDetails();
 	cover.addEventListener("click", function(e){
 		if(e.target == this)
-			cover.className = "";  
+			closeDetails(); 
 	});
     var loc = navigator.geolocation.getCurrentPosition(getCoords, error, options);
 }, false);
@@ -24,7 +27,7 @@ function getCoords(position){
 	getWeather({coords: roundedCoords}, function(arr){
 		console.log(arr);
 		setInputText(`${arr.city.name}, ${arr.city.country}`);
-		var days = {};
+		days = {};
 		for (let i = 0; i < arr.list.length; i++) {
 			let item = arr.list[i];
 			let dateInText = getDateinText(item.dt_txt);
@@ -50,6 +53,7 @@ function getCoords(position){
 		for(day in days){
 			let obj = averageAll(days[day]);
 			obj.date = day;
+			console.log(days);
 			console.log(obj);
 			addItemToForecast(obj);
 		}
@@ -68,8 +72,14 @@ function getDateinText(str){
 function averageAll(obj){
 	var r = {};
 	for(key in obj){
-		if(key !== "weather" && key !== "weather_icon")
-			r[key] = average(obj[key]);
+		if(key !== "weather" && key !== "weather_icon"){
+			if(key !== "temp"){
+				r[key] = average(obj[key]);
+			}
+			else{
+				r[key] = Math.max(...obj[key]);
+			}
+		}
 		else{
 			if(key === "weather"){
 				r[key] = mode(obj[key]);
@@ -149,7 +159,33 @@ function kelvinToCelsius(k) {
 }
 
 function showDetailedForecast(date){
+	console.log(days[date]);
 	cover.className = "visible";
+	var btn = document.createElement("a");
+	btn.href = "#";
+	btn.className = "closeBtn";
+	btn.innerText = "×";
+	btn.addEventListener("click", closeDetails);
+	details.appendChild(btn);
+	var flex = document.createElement("div");
+	flex.id = "details--flexbox";
+	var heading = createElementWithClass("h2", "", date);
+	details.appendChild(heading);
+	details.appendChild(flex);
+	for (var i = 0; i < days[date].timestamp.length; i++) {
+		var wrapper = document.createElement("div");
+		console.log(days[date]);
+		var item = createElementWithClass("h3", "time", timestampToTime(days[date].timestamp[i]));
+		wrapper.appendChild(item);
+		item = createElementWithClass("i", `wi ${getIcon(days[date].weather_icon[i])}`);
+		wrapper.appendChild(item);
+		if(!days[date].weather[i]) days[date].weather[i] = days[date].weather[i-1];
+		item = createElementWithClass("h3", "weather", days[date].weather[i]);
+		wrapper.appendChild(item);
+		item = createElementWithClass("h3", "temp", kelvinToCelsius(days[date].temp[i]));
+		wrapper.appendChild(item);
+		flex.appendChild(wrapper);	
+	}
 }
 
 function getIcon(weatherIcon){
@@ -176,4 +212,14 @@ function mode(arr){
           arr.filter(v => v===a).length
         - arr.filter(v => v===b).length
     ).pop();
+}
+
+function closeDetails(){
+	cover.className = "";
+	details.innerHTML = "";
+}
+
+function timestampToTime(ts){
+	var d = new Date(ts*1000);
+	return `${("0"+d.getHours()).substr(-2)}:${("0"+d.getMinutes()).substr(-2)}`;
 }
